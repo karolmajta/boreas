@@ -1,0 +1,47 @@
+gnore gedit tempfiles
+*~
+
+*.py[cod]
+
+# C extensions
+*.so
+
+# Installer logs
+pip-log.txt
+
+# Eclipse related
+.project
+.pydevproject
+
+# Unit test / coverage reports
+.coverage
+.tox
+nosetests.xml
+
+# Translations
+*.mo
+
+# Django specific
+*.log
+*.pot
+
+# Project specific
+.settings
+
+# Ignore egg-info
+*.egg-info
+
+# Ignore packaged distributions
+docs/_build/doctrees/
+
+# Ignore sources attached to html docs
+docs/_build/html/_sources/
+
+# Ignore docs templates
+docs/_templates/
+
+# Ignore docs staticfiles
+docs/_static/
+
+# Ignore builds
+dist/
