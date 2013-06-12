@@ -15,6 +15,7 @@ def boreas():
     define("ws_port", default=8002, help="Websocket port", type=int)
     define("ws_host", default='127.0.0.1', help="Websocket host", type=str)
     define("token_provider", default='boreas.utils.tokens:no_tokens', help="Function providing initial tokens", type=str)
+    define("require_auth", default=True, help="Flag indicating if user has to authenticate", type=bool)
     
     options.parse_command_line()
     

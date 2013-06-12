@@ -4,6 +4,8 @@ Created on 18-02-2013
 @author: kamil
 '''
 import json
+import uuid
+import time
 
 import tornado.websocket
 from simplejson.decoder import JSONDecodeError
@@ -17,6 +19,10 @@ class GlobalFeedHandler(tornado.websocket.WebSocketHandler):
     
     def open(self):
         self.application.recipient_pool.register(self)
+        if not self.application.require_auth:
+            # elevate all clients upon connection using unique token
+            random_token = u"{0}-{1}".format(str(uuid.uuid4()), int(time.time()))
+            self.elevate(random_token, noauth=True)
 
     def on_close(self):
         self.leave(self, *list(self.channels))
@@ -51,8 +57,11 @@ class GlobalFeedHandler(tornado.websocket.WebSocketHandler):
             return
         try:
             token = str(payload['access_token'])
-            self.elevate(token)
-            return
+            if not self.application.require_auth:
+                return # just ignore authentication messages when auth is disabled
+            else:
+                self.elevate(token)
+                return
         except (ValueError, KeyError):
             pass # hackish - exceptions for flow control, but hell, its python
         if self.token is None:
@@ -73,8 +82,8 @@ class GlobalFeedHandler(tornado.websocket.WebSocketHandler):
     def callback(self, message):
         self.write_message(message)
     
-    def elevate(self, new_token):
-        if self.application.token_pool.has(new_token):
+    def elevate(self, new_token, noauth=False):
+        if noauth or self.application.token_pool.has(new_token):
             self.application.recipient_pool.elevate(self, self.token, new_token)
             self.token = new_token
     

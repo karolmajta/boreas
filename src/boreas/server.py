@@ -31,7 +31,15 @@ def run(options):
         for url, _ in boreas.api.urls.debug_handlers:
             print "\t- {0}".format(url)
     api_app = RecipientPoolApplication(receiver_pool, token_pool, handlers=api_handlers)
-    websocket_app = RecipientPoolApplication(receiver_pool, token_pool, handlers=boreas.ws.urls.handlers)
+    require_auth = options.require_auth
+    if not require_auth:
+        print "WARNING, `require_auth` flag is set to false. Users will not need to authenticate, tokens will be generated."
+    websocket_app = RecipientPoolApplication(
+        receiver_pool,
+        token_pool,
+        require_auth,
+        handlers=boreas.ws.urls.handlers
+    )
     api_server = tornado.httpserver.HTTPServer(api_app)
     ws_server = tornado.httpserver.HTTPServer(websocket_app)
     
